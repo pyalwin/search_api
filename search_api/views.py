@@ -10,7 +10,7 @@ preprocessed_item = {}
 unprocessed_item = {}
 preprocessed_word_item = {}
 author_dict = {}
-
+json_file_data = {}
 
 
 def search_func(request):
@@ -30,6 +30,8 @@ def search_summary(term_to_search, no_of_results):
         try:
             r = requests.get('http://localhost:8000/static/data.json')
             file_data = r.json()
+            json_file_data = file_data
+            print (json_file_data['titles'])
         except Exception as e:
             return JsonResponse({'message': 'Error'},status=500)
         summary_data = file_data['summaries']
@@ -88,6 +90,12 @@ def search_with_author_info(request):
                     print (req)
             else:
                 res['author'] = author_dict[res['id']]
+            ## Below part of code is redundant and to be fixed
+            r = requests.get('http://localhost:8000/static/data.json')
+            file_data = r.json()
+            json_file_data = file_data
+            #######
+            res['title'] = json_file_data['titles'][res['id']]
         return_list.append(search_result)
     
     return JsonResponse(return_list, safe=False)
